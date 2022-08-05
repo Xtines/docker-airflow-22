@@ -3,10 +3,13 @@ services:
     postgres:
         image: postgres:9.6
         environment:
-            - POSTGRES_USER=${POSTGRES_USER}
-            - POSTGRES_DB=${POSTGRES_DB}
-        env_file:
-            - secrets/postgres.env
+            #- POSTGRES_USER=${POSTGRES_USER}
+            #- POSTGRES_DB=${POSTGRES_DB}
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+        #env_file:
+        #    - secrets/postgres.env
         logging:
             options:
                 max-size: 10m
@@ -20,20 +23,23 @@ services:
         environment:
             - LOAD_EX=n
             - EXECUTOR=Local
-            - POSTGRES_USER=${POSTGRES_USER}
-            - POSTGRES_DB=${POSTGRES_DB}
-        env_file:
-            - secrets/fernet_key.env
-            - secrets/postgres.env
+            
+        #    - POSTGRES_USER=${POSTGRES_USER}
+        #    - POSTGRES_DB=${POSTGRES_DB}
+        #env_file:
+        #    - secrets/fernet_key.env
+        #    - secrets/postgres.env
         logging:
             options:
                 max-size: 10m
                 max-file: "3"
         volumes:
-            - "./dags:${AIRFLOW_DAG_DIR}"
+            #- "./dags:${AIRFLOW_DAG_DIR}"
+            - ./dags:/usr/local/airflow/dags
+            
             # - "./plugins:${AIRFLOW_PLUGINS_DIR}"
         ports:
-            - "8080:8080"
+            - "8082:8080"
         command: webserver
         healthcheck:
             test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
